@@ -1,0 +1,11 @@
+POST http://localhost:9000/employees HTTP/1.1
+content-type: application/json
+
+{
+    "firstName": "Pa",
+    "lastName": "Lê Thanh",
+    "phoneNumber" : "0805021324",
+    "email" : "lethanhpa1406@gmail.com",
+    "address" : "VIETNAM",
+    "birthDay" : "2002/06/14"
+}

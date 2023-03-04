@@ -1,0 +1,8 @@
+PATCH  http://localhost:9000/employees/5 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Mercedes",
+    "email": "mercedes@gmail.com",
+    "gender": "male"
+}

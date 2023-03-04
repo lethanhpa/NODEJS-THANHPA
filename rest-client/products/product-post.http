@@ -1,0 +1,12 @@
+POST http://localhost:9000/products HTTP/1.1
+content-type: application/json
+
+{
+   "name": "Iphone 12",
+   "price": 1600,
+   "discount" : 10,
+   "stock" : 20,
+   "categoryId" : 5,
+   "supplierId" : 5,
+   "description" : "Smartphone"
+}

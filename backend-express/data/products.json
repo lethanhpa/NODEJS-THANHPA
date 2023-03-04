@@ -1,0 +1,6 @@
+[
+  { "name": "Iphone 14", "price": 1300, "id": 1 },
+  { "name": "Samsung zipo 4", "price": 1500, "id": 2 },
+  { "name": "Iphone 14 pro max", "price": 1600, "id": 3 },
+  { "name": "Iphone 12", "price": 1600, "id": 4 }
+]
