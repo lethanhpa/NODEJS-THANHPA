@@ -1,1 +1,11 @@
-[{"name":"vinfast","email":"vinfast@gmail.com","address":"VIETNAM","id":1},{"name":"Honda","email":"honda@gmail.com","address":"JAPAN","id":3},{"firstName":"Le","lastName":"Thanh Pa","phoneNumber":"0805021324","email":"lethanhpa1406@gmail.com","address":"VIETNAM","birthDay":"2002/06/14","id":4}]
+[
+  {
+    "firstName": "Le",
+    "lastName": "Thanh Pa",
+    "phoneNumber": "0805021324",
+    "email": "lethanhpa1406@gmail.com",
+    "address": "VIETNAM",
+    "birthDay": "2002/06/14",
+    "id": 4
+  }
+]

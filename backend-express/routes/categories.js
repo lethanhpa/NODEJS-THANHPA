@@ -15,6 +15,7 @@ const fileName = "./data/categories.json";
 
 router.get("/", function (req, res, next) {
   res.send(data);
+  
 });
 
 router.post("/", function (req, res, next) {
