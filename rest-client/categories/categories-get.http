@@ -1,2 +1,2 @@
-GET http://localhost:9000/categories HTTP/1.1
+GET http://localhost:9000/categories/641ae8e45897bab0db7219b9 HTTP/1.1
 content-type: application/json
