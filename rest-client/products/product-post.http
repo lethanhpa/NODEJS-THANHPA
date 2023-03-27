@@ -2,11 +2,11 @@ POST http://localhost:9000/products HTTP/1.1
 content-type: application/json
 
 {
-   "name": "Iphone 12",
-   "price": 1600,
-   "discount" : 10,
-   "stock" : 20,
-   "categoryId" : 5,
-   "supplierId" : 5,
-   "description" : "Smartphone"
+  "name": "Lamborghini",
+  "price": 500000,
+  "discount": 15,
+  "stock": 10,
+  "description": "Supercar",
+  "categoryId": "641ae8af5897bab0db7219b7",
+  "supplierId": "642151e00565009af266acf8"
 }

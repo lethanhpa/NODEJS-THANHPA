@@ -28,6 +28,9 @@ orderDetailSchema.set('toJSON', { virtuals: true });
 // ------------------------------------------------------------------------------------------------
 
 const orderSchema = new Schema({
+  shippingAddress: { type: String, required: true },
+  description: { type: String, required: true },
+
   createdDate: {
     type: Date,
     required: true,

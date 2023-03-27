@@ -1,0 +1,2 @@
+DELETE http://localhost:9000/orders/642153340565009af266ad04 HTTP/1.1
+content-type: application/json

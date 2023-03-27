@@ -5,7 +5,7 @@ content-type: application/json
     "firstName": "Pa",
     "lastName": "Lê Thanh",
     "phoneNumber" : "0805021324",
-    "email" : "lethanhpa1406@gmail.com",
+    "email" : "lethanhpa@gmail.com",
     "address" : "VIETNAM",
-    "birthDay" : "2002/06/14"
+    "birthday" : "2002/06/14"
 }

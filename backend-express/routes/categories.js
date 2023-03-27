@@ -10,14 +10,7 @@ let data = require("../data/categories.json");
 
 const fileName = "./data/categories.json";
 
-// let  data = [
-//   { id: 1, name: "Mobile Phone", description: "Điện thoại" },
-//   { id: 2, name: "Fashion", description: "Thời trang" },
-//   { id: 3, name: "Toys", description: "Đồ chơi cho trẻ em" },
-// ];
-router.get("/", function (req, res, next) {
-  res.send(data);
-});
+
 
 router.get('/', function (req, res, next) {
   try {

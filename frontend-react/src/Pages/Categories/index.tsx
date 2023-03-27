@@ -31,7 +31,7 @@ export default function Categories() {
       },
     },
     {
-      title: "Ghi chu",
+      title: "Ghi chú",
       dataIndex: "description",
       key: "description",
     },
@@ -60,7 +60,7 @@ export default function Categories() {
                 axios.delete(API_URL + "/" + record.id).then((response) => {
                   setRefresh((f) => f + 1);
 
-                  message.success("Xoa danh mục thành công", 1.5);
+                  message.success("Xóa danh mục thành công", 1.5);
                 });
               }}
             />
@@ -102,7 +102,7 @@ export default function Categories() {
       .then((response) => {
         setRefresh((f) => f + 1);
         updateFrom.resetFields();
-        message.success("Cap nhat danh mục thành công", 1.5);
+        message.success("Cập nhật danh mục thành công", 1.5);
         setOpen(false);
       })
       .catch((err) => {});
