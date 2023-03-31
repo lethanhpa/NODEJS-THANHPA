@@ -2,8 +2,8 @@ POST http://localhost:9000/suppliers HTTP/1.1
 content-type: application/json
 
 {
-   "name": "Car",
-   "email": "car@gmail.com",
-   "phoneNumber" : "0905621255",
-   "address" : "Italy"
+   "name": "Toy",
+   "email": "toy@gmail.com",
+   "phoneNumber" : "0777355261",
+   "address" : "Viet Nam"
 }

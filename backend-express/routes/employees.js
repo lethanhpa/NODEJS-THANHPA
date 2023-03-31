@@ -3,8 +3,8 @@ const express = require("express");
 const router = express.Router();
 const { Employee } = require('../models');
 const ObjectId = require('mongodb').ObjectId;
-const { write } = require('../helpers/FileHelper');
-let data = require('../data/employees.json');
+// const { write } = require('../helpers/FileHelper');
+// let data = require('../data/employees.json');
 
 const fileName = './data/employees.json';
 router.get('/', function (req, res, next) {
@@ -160,7 +160,7 @@ router.patch("/:id", function (req, res, next) {
     }
   }
 
-  write(fileName, data);
+  // write(fileName, data);
 
   res.send({ ok: true, message: "Updated" });
 });

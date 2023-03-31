@@ -2,10 +2,10 @@ POST http://localhost:9000/customers HTTP/1.1
 content-type: application/json
 
 {
-    "firstName": "Pa",
-    "lastName": "Lê Thanh",
-    "phoneNumber" : "0805021324",
-    "email" : "lethanhpa1406@gmail.com",
-    "address" : "VIETNAM",
-    "birthday" : "2002/06/14"
+    "firstName": "Nhàn",
+    "lastName": "Phan Thị Thanh",
+    "phoneNumber" : "0337215446",
+    "email" : "phanthithanhnhan@gmail.com",
+    "address" : "28 Phan Thanh",
+    "birthday" : "1999/03/30"
 }

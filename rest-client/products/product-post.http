@@ -2,11 +2,11 @@ POST http://localhost:9000/products HTTP/1.1
 content-type: application/json
 
 {
-  "name": "Lamborghini",
-  "price": 500000,
+  "name": "Robot",
+  "price": 200,
   "discount": 15,
-  "stock": 10,
-  "description": "Supercar",
-  "categoryId": "641ae8af5897bab0db7219b7",
-  "supplierId": "642151e00565009af266acf8"
+  "stock": 300,
+  "description": "Robot",
+  "categoryId": "641ae8e45897bab0db7219b9",
+  "supplierId": "6424433826e142c5be8f32ab"
 }
