@@ -24,6 +24,9 @@ export default function Categories() {
       key: 'id',
       width: '1%',
       align: 'right',
+      render: (text, record, index) => {
+        return <span>{index + 1}</span>;
+      },
     },
     {
       title: 'Tên danh mục',

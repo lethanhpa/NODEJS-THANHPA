@@ -1,9 +1,42 @@
 const yup = require("yup");
 const express = require("express");
 const router = express.Router();
-const { write } = require("../helpers/FileHelper");
-let data = require("../data/suppliers.json");
+const passport = require('passport');
 const { Supplier } = require("../models");
+
+const { CONNECTION_STRING } = require('../constants/dbSettings');
+const { default: mongoose } = require('mongoose');
+
+mongoose.set('strictQuery', false);
+mongoose.connect(CONNECTION_STRING);
+
+router.get(
+  '/profile',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const supplier = await Supplier.findById(req.user._id);
+
+      if (!supplier) return res.status(404).send({ message: 'Not found' });
+
+      res.status(200).json(supplier);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  },
+);
+
+router.route('/profile').get(passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+  try {
+    const supplier = await Supplier.findById(req.user._id);
+
+    if (!supplier) return res.status(404).send({ message: 'Not found' });
+
+    res.status(200).json(supplier);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+},);
 
 const fileName = "./data/suppliers.json";
 router.get('/', function (req, res, next) {

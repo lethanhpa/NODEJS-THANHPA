@@ -9,6 +9,7 @@ import Products from "./Pages/Products/indexProducts";
 import Employees from "./Pages/Employees/indexEmployess";
 import Customers from "./Pages/Customers/indexCustomers";
 import Suppliers from "./Pages/Suppliers/indexSuppliers";
+import Order from "./Pages/Orders/indexOrders";
 import Home from "./Pages/Home";
 import NavigationBar from "./components/NavigationBar";
 
@@ -42,6 +43,7 @@ function App() {
             <Route path="/employees" element={<Employees />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/suppliers" element={<Suppliers />} />
+            <Route path="/orders" element={<Order />} />
           </Routes>
         </Content>
         <Footer style={footerStyle}>Footer</Footer>

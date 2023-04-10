@@ -1,15 +1,15 @@
-const yup = require("yup");
-const express = require("express");
-const router = express.Router();
+const passport = require('passport');
+const express = require('express');
+
+const { CONNECTION_STRING } = require('../constants/dbSettings');
+const { default: mongoose } = require('mongoose');
 const { Category } = require('../models');
-const ObjectId = require('mongodb').ObjectId;
 
-const { write } = require("../helpers/FileHelper");
+// MONGOOSE
+mongoose.set('strictQuery', false);
+mongoose.connect(CONNECTION_STRING);
 
-let data = require("../data/categories.json");
-
-const fileName = "./data/categories.json";
-
+const router = express.Router();
 
 
 router.get('/', function (req, res, next) {
@@ -25,6 +25,34 @@ router.get('/', function (req, res, next) {
     res.sendStatus(500);
   }
 });
+
+router.get(
+  '/profile',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const category = await Category.findById(req.user._id);
+
+      if (!category) return res.status(404).send({ message: 'Not found' });
+
+      res.status(200).json(category);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  },
+);
+
+router.route('/profile').get(passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+  try {
+    const category = await Category.findById(req.user._id);
+
+    if (!category) return res.status(404).send({ message: 'Not found' });
+
+    res.status(200).json(category);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+},);
 
 router.get('/:id', async function (req, res, next) {
   // Validate

@@ -2,10 +2,11 @@ POST http://localhost:9000/employees HTTP/1.1
 content-type: application/json
 
 {
-    "firstName": "Pa",
-    "lastName": "Lê Thanh",
-    "phoneNumber" : "0805021324",
-    "email" : "lethanhpa@gmail.com",
-    "address" : "VIETNAM",
-    "birthday" : "2002/06/14"
+    "firstName": "Lan",
+    "lastName": "Nguyễn Thị",
+    "email": "nguyenthilan@gmail.com",
+    "password": "111111",
+    "phoneNumber": "0337214789",
+    "address": "22 Nguyên Văn Linh",
+    "birthday": "1999/02/14"
 }

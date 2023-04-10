@@ -10,6 +10,10 @@ const { Schema, model } = mongoose;
 const orderDetailSchema = new Schema({
   productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, require: true, min: 0 },
+  price: { type: Number, required: true, min: 0, default: 0 },
+  discount: { type: Number, min: 0, max: 75, default: 0 },
+  stock: { type: Number, min: 0, default: 0 },
+  description: { type: String, required: true }
 });
 
 // Virtual with Populate

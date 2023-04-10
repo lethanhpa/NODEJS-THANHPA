@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
+const bcrypt = require('bcryptjs');
 
 // Mongoose Datatypes:
 // https://mongoosejs.com/docs/schematypes.html
@@ -33,19 +34,59 @@ const employeeSchema = new Schema({
       // message: (props) => `{props.value} is not a valid email!`,
     },
   },
+  password: { type: String, require: true},
   address: { type: String, required: true },
   birthday: { type: Date },
 });
+
+employeeSchema.pre('save', async function (next) {
+  try {
+    // generate salt key
+    const salt = await bcrypt.genSalt(10); // 10 ký tự
+    // generate password = salt key + hash key
+    const hashPass = await bcrypt.hash(this.password, salt);
+    // override password
+    this.password = hashPass;
+    next();
+  } catch (err) {
+    next(err);
+  }
+})
+
+employeeSchema.methods.isValidPass = async function(pass) {
+  try {
+    return await bcrypt.compare(pass, this.password);
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
+// employeeSchema.pre('save', function a(next) {
+//   const user = this;
+
+//   if (!user.isModified('password')) return next();
+
+//   bcrypt.genSalt(10, (err, salt) => {
+//     if (err) return next(err);
+
+//     bcrypt.hash(user.password, salt, (hashErr, hash) => {
+//       if (hashErr) return next(hashErr);
+
+//       user.password = hash;
+//       next();
+//     });
+//   });
+// });
+
+// // Check password from client
+// employeeSchema.methods.comparePassword = function comparePassword(checkPassword) {
+//   return bcrypt.compareSync(checkPassword, this.password);
+// };
 
 // Virtuals
 employeeSchema.virtual('fullName').get(function () {
   return this.firstName + ' ' + this.lastName;
 });
-
-// Virtuals in console.log()
-employeeSchema.set('toObject', { virtuals: true });
-// Virtuals in JSON
-employeeSchema.set('toJSON', { virtuals: true });
 
 const Employee = model('Employee', employeeSchema);
 module.exports = Employee;

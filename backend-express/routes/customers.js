@@ -1,9 +1,42 @@
 const yup = require('yup');
 const express = require("express");
+const passport = require('passport');
 const router = express.Router();
 const { Customer } = require("../models");
-const { write } = require('../helpers/FileHelper');
-let data = require('../data/customers.json');
+
+const { CONNECTION_STRING } = require('../constants/dbSettings');
+const { default: mongoose } = require('mongoose');
+
+mongoose.set('strictQuery', false);
+mongoose.connect(CONNECTION_STRING);
+
+router.get(
+  '/profile',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const customer = await Customer.findById(req.user._id);
+
+      if (!customer) return res.status(404).send({ message: 'Not found' });
+
+      res.status(200).json(customer);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  },
+);
+
+router.route('/profile').get(passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+  try {
+    const customer = await Customer.findById(req.user._id);
+
+    if (!customer) return res.status(404).send({ message: 'Not found' });
+
+    res.status(200).json(customer);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+},);
 
 const fileName = './data/customers.json';
 router.get('/', function (req, res, next) {
