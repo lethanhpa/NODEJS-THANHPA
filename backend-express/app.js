@@ -46,7 +46,18 @@ app.use(
 
 // MONGOOSE
 mongoose.set('strictQuery', false);
-mongoose.connect(CONNECTION_STRING);
+mongoose.connect(CONNECTION_STRING,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+);
+mongoose.connection.on('error', (err) => {
+  if (err) {
+    console.error(err);
+
+    mongoose.connect(CONNECTION_STRING,
+      { useNewUrlParser: true, useUnifiedTopology: true },
+    );
+  }
+});
 
 passport.use(passportConfig);
 passport.use(passportConfigLocal);

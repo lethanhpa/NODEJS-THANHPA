@@ -11,6 +11,7 @@ const { default: mongoose } = require('mongoose');
 mongoose.set('strictQuery', false);
 mongoose.connect(CONNECTION_STRING);
 
+
 router.get(
   '/profile',
   passport.authenticate('jwt', { session: false }),
