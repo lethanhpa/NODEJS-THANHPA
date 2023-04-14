@@ -12,6 +12,7 @@ export default function Orders() {
   const [items, setItems] = React.useState<any[]>([]);
   const [customers, setCustomers] = React.useState<any[]>([]);
   const [employees, setEmployees] = React.useState<any[]>([]);
+  const [orders, setOrders] = React.useState<any[]>([]);
 
   const [refresh, setRefresh] = React.useState<number>(0);
   const [open, setOpen] = React.useState<boolean>(false);
@@ -165,6 +166,19 @@ export default function Orders() {
       });
   }, []);
 
+  //Get orders
+  React.useEffect(() => {
+    axios
+      .get('/employees')
+      .then((response) => {
+        const { data } = response;
+        setOrders(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
   const onFinish = (values: any) => {
     console.log(values);
 
@@ -206,80 +220,74 @@ export default function Orders() {
           }}
         >
           <Form.Item
-            label='Customers'
+            label='Khách hàng'
             name='customerId'
             hasFeedback
             required={true}
             rules={[
               {
                 required: true,
-                message: 'B ắt buộc phải chọn',
+                message: 'Bắt buộc phải chọn',
               },
             ]}
           >
             <Select
               style={{ width: '100%' }}
               options={customers.map((c) => {
-                return { value: c._id, label: c.fistName };
+                return { value: c._id , label: c.lastName + " " + c.firstName};
               })}
             />
           </Form.Item>
 
           <Form.Item
-            label='Nhà cung cấp'
+            label='Nhân viên'
             name='employeeId'
             hasFeedback
             required={true}
             rules={[
               {
                 required: true,
-                message: 'Nhà cung cấp bắt buộc phải chọn',
+                message: 'Bắt buộc phải chọn',
               },
             ]}
           >
             <Select
               style={{ width: '100%' }}
               options={employees.map((c) => {
-                return { value: c._id, label: c.name };
+                return { value: c._id, label: c.lastName + " " + c.firstName};
               })}
             />
           </Form.Item>
+
           <Form.Item
-            label='Tên sản phẩm'
-            name='name'
+            label='Phương thức thanh toán'
+            name='paymentType'
             hasFeedback
             required={true}
             rules={[
               {
                 required: true,
-                message: 'Tên sản phẩm bắt buộc phải nhập',
+                message: 'Bắt buộc phải chọn',
               },
             ]}
           >
-            <Input />
+            <Select
+              style={{ width: '100%' }}
+              options={orders.map((c) => {
+                return { value: c._id, label: c.paymentType};
+              })}
+            />
+          </Form.Item>
+          <Form.Item label='Trạng thái' name='status' hasFeedback>
+            <Input style={{ width: 200 }} />
           </Form.Item>
 
-          <Form.Item
-            label='Giá bán'
-            name='price'
-            hasFeedback
-            required={true}
-            rules={[
-              {
-                required: true,
-                message: 'Giá bán bắt buộc phải nhập',
-              },
-            ]}
-          >
-            <InputNumber style={{ width: 200 }} />
+          <Form.Item label='Ngày tạo' name='createdDate' hasFeedback>
+            <Input style={{ width: 200 }} />
           </Form.Item>
 
-          <Form.Item label='Giảm giá' name='discount' hasFeedback>
-            <InputNumber style={{ width: 200 }} />
-          </Form.Item>
-
-          <Form.Item label='Tồn kho' name='stock' hasFeedback>
-            <InputNumber style={{ width: 200 }} />
+          <Form.Item label='Ngày giao' name='shippedDate' hasFeedback>
+            <Input style={{ width: 200 }} />
           </Form.Item>
 
           <Form.Item
@@ -323,47 +331,48 @@ export default function Orders() {
           }}
         >
           <Form.Item
-            label='Danh mục sản phẩm'
+            label='Khách hàng'
             name='customerId'
             hasFeedback
             required={true}
             rules={[
               {
                 required: true,
-                message: 'Danh mục sản phẩm bắt buộc phải chọn',
+                message: 'Bắt buộc phải chọn',
               },
             ]}
           >
             <Select
               style={{ width: '100%' }}
               options={customers.map((c) => {
-                return { value: c._id, label: c.name };
+                return { value: c._id , label: c.lastName + " " + c.firstName};
               })}
             />
           </Form.Item>
 
           <Form.Item
-            label='Nhà cung cấp'
+            label='Nhân viên'
             name='employeeId'
             hasFeedback
             required={true}
             rules={[
               {
                 required: true,
-                message: 'Nhà cung cấp bắt buộc phải chọn',
+                message: 'Bắt buộc phải chọn',
               },
             ]}
           >
             <Select
               style={{ width: '100%' }}
               options={employees.map((c) => {
-                return { value: c._id, label: c.name };
+                return { value: c._id, label: c.lastName + " " + c.firstName};
               })}
             />
           </Form.Item>
+
           <Form.Item
-            label='Tên sản phẩm'
-            name='name'
+            label='Phương thức thanh toán'
+            name='paymentType'
             hasFeedback
             required={true}
             rules={[
@@ -376,27 +385,16 @@ export default function Orders() {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label='Giá bán'
-            name='price'
-            hasFeedback
-            required={true}
-            rules={[
-              {
-                required: true,
-                message: 'Giá bán bắt buộc phải nhập',
-              },
-            ]}
-          >
-            <InputNumber style={{ width: 200 }} />
+          <Form.Item label='Trạng thái' name='status' hasFeedback>
+            <Input style={{ width: 200 }} />
           </Form.Item>
 
-          <Form.Item label='Giảm giá' name='discount' hasFeedback>
-            <InputNumber style={{ width: 200 }} />
+          <Form.Item label='Ngày tạo' name='createdDate' hasFeedback>
+            <Input style={{ width: 200 }} />
           </Form.Item>
 
-          <Form.Item label='Tồn kho' name='stock' hasFeedback>
-            <InputNumber style={{ width: 200 }} />
+          <Form.Item label='Ngày giao' name='shippedDate' hasFeedback>
+            <Input style={{ width: 200 }} />
           </Form.Item>
         </Form>
       </Modal>

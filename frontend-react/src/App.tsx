@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import Products from "./Pages/Products/indexProducts";
-import Employees from "./Pages/Employees/indexEmployess";
+import Employees from "./Pages/Employees/indexEmployees";
 import Customers from "./Pages/Customers/indexCustomers";
 import Suppliers from "./Pages/Suppliers/indexSuppliers";
 import Order from "./Pages/Orders/indexOrders";
