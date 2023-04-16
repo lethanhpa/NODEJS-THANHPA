@@ -5,11 +5,11 @@ import Categories from "./Pages/Categories/index";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
-import Products from "./Pages/Products/indexProducts";
-import Employees from "./Pages/Employees/indexEmployees";
-import Customers from "./Pages/Customers/indexCustomers";
-import Suppliers from "./Pages/Suppliers/indexSuppliers";
-import Order from "./Pages/Orders/indexOrders";
+import Products from "./Pages/Products";
+import Employees from "./Pages/Employees";
+import Customers from "./Pages/Customers";
+import Suppliers from "./Pages/Suppliers";
+import Order from "./Pages/Orders";
 import Home from "./Pages/Home";
 import NavigationBar from "./components/NavigationBar";
 

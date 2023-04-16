@@ -1,5 +1,5 @@
-const yup = require('yup');
-const ObjectId = require('mongodb').ObjectId;
+const yup = require("yup");
+//const ObjectId = require('mongodb').ObjectId;
 
 const validateSchema = (schema) => async (req, res, next) => {
   try {
@@ -22,16 +22,44 @@ const loginSchema = yup.object({
   params: yup.object({}),
 });
 
-const categorySchema = yup.object().shape({
+const loginCategorySchema = yup.object({
   params: yup.object({
-    id: yup.string().test('Validate ObjectID', '${path} is not valid ObjectID', (value) => {
-      return ObjectId.isValid(value);
-    }),
+    _id: yup.string(),
+  }),
+});
+
+const loginSupplierSchema = yup.object({
+  body: yup.object({
+    email: yup.string().email().required(),
+  }),
+  params: yup.object({}),
+});
+
+const loginCustomerSchema = yup.object({
+  body: yup.object({
+    email: yup.string().email().required(),
+  }),
+  params: yup.object({}),
+});
+
+const loginProductSchema = yup.object({
+  params: yup.object({
+    _id: yup.string(),
+  }),
+});
+
+const loginOrderSchema = yup.object({
+  params: yup.object({
+    _id: yup.string(),
   }),
 });
 
 module.exports = {
   validateSchema,
   loginSchema,
-  categorySchema,
+  loginCategorySchema,
+  loginSupplierSchema,
+  loginCustomerSchema,
+  loginProductSchema,
+  loginOrderSchema,
 };

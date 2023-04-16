@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Modal, Space, Table } from 'antd';
+import { Button, Form, Input, message, Modal, Pagination, Space, Table } from 'antd';
 import axios from '../../libraries/axiosClient';
 import React from 'react';
 
@@ -9,19 +9,26 @@ import type { ColumnsType } from 'antd/es/table';
 const apiName = '/categories';
 
 export default function Categories() {
-  const [categories, setCategories] = React.useState<any[]>([]);
+  const [items, setItems] = React.useState<any[]>([]);
   const [refresh, setRefresh] = React.useState<number>(0);
   const [open, setOpen] = React.useState<boolean>(false);
   const [updateId, setUpdateId] = React.useState<number>(0);
-
+  const [openTable, setOpenTable] = React.useState<boolean>(false);
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setPageSize(pageSize || 10);
+  };
 
   const columns: ColumnsType<any> = [
     {
       title: 'Id',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: '_id',
+      key: '_id',
       width: '1%',
       align: 'right',
       render: (text, record, index) => {
@@ -54,7 +61,7 @@ export default function Categories() {
               icon={<EditOutlined />}
               onClick={() => {
                 setOpen(true);
-                setUpdateId(record.id);
+                setUpdateId(record._id);
                 updateForm.setFieldsValue(record);
               }}
             />
@@ -63,11 +70,11 @@ export default function Categories() {
               danger
               icon={<DeleteOutlined />}
               onClick={() => {
-                console.log(record.id);
-                axios.delete('/categories/' + record.id).then((response) => {
+                console.log(record._id);
+                axios.delete(apiName + "/" + record._id).then((response) => {
                   setRefresh((f) => f + 1);
-                  message.success('Xóa danh mục thành công!', 1.5);
-                });
+                  message.success("Xóa danh mục thành công!", 1.5);
+                })
               }}
             />
           </Space>
@@ -82,8 +89,8 @@ export default function Categories() {
       .get(apiName)
       .then((response) => {
         const { data } = response;
-        setCategories(data);
-        console.log(data);
+        console.log(data.length);
+        setItems(data);
       })
       .catch((err) => {
         console.error(err);
@@ -98,28 +105,34 @@ export default function Categories() {
       .then((response) => {
         setRefresh((f) => f + 1);
         createForm.resetFields();
-        message.success('Thêm mới danh mục thành công!', 1.5);
+        setOpenTable(true);
+        message.success("Thêm mới danh mục thành công!", 1.5);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const onUpdateFinish = (values: any) => {
-    // console.log(values);
-    // console.log(updateId);
+    console.log(values);
+    console.log(updateId);
 
     axios
-      .patch(apiName + '/' + updateId, values)
+      .patch(apiName + "/" + updateId, values)
       .then((response) => {
         setRefresh((f) => f + 1);
         updateForm.resetFields();
-        message.success('Cập nhật danh mục thành công!', 1.5);
+        message.success("Cập nhật thành công!", 1.5);
         setOpen(false);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (
     <div style={{ padding: 24 }}>
+      <h1 style={{ textAlign: "center" }}>Thêm danh mục</h1>
       <div style={{}}>
         {/* CREAT FORM */}
         <Form
@@ -165,7 +178,30 @@ export default function Categories() {
         </Form>
       </div>
       {/* TABLE */}
-      <Table rowKey='id' dataSource={categories} columns={columns} pagination={false} />
+      <Modal
+        width={1000}
+        open={openTable}
+        onCancel={() => {
+          setOpenTable(false);
+        }}
+        onOk={() => {
+          setOpenTable(false);
+        }}
+      >
+        <Table
+          rowKey="id"
+          dataSource={items.slice((currentPage - 1) * 10, currentPage * 10)}
+          columns={columns}
+          pagination={false}
+        />
+        <Pagination
+          style={{ paddingTop: "24px" }}
+          total={items.length}
+          current={currentPage}
+          pageSize={10}
+          onChange={handlePageChange}
+        />
+      </Modal>
 
       {/* EDIT FORM */}
 

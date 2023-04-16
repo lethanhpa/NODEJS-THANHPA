@@ -1,4 +1,13 @@
-import { Button, Form, Input, message, Modal, Space, Table } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Pagination,
+  Space,
+  Table,
+} from "antd";
 import axios from "../../libraries/axiosClient";
 import React from "react";
 
@@ -17,6 +26,14 @@ export default function Suppliers() {
 
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
+  const [openTable, setOpenTable] = React.useState<boolean>(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setPageSize(pageSize || 10);
+  };
 
   const columns: ColumnsType<any> = [
     {
@@ -77,7 +94,7 @@ export default function Suppliers() {
               icon={<EditOutlined />}
               onClick={() => {
                 setOpen(true);
-                setUpdateId(record.id);
+                setUpdateId(record._id);
                 updateForm.setFieldsValue(record);
               }}
             />
@@ -85,8 +102,8 @@ export default function Suppliers() {
               danger
               icon={<DeleteOutlined />}
               onClick={() => {
-                console.log(record.id);
-                axios.delete(apiName + "/" + record.id).then((response) => {
+                console.log(record._id);
+                axios.delete(apiName + "/" + record._id).then((response) => {
                   setRefresh((f) => f + 1);
                   message.success("Xóa danh mục thành công!", 1.5);
                 });
@@ -119,6 +136,7 @@ export default function Suppliers() {
       .then((response) => {
         setRefresh((f) => f + 1);
         createForm.resetFields();
+        setOpenTable(true);
         message.success("Thêm mới danh mục thành công!", 1.5);
       })
       .catch((err) => {});
@@ -138,6 +156,7 @@ export default function Suppliers() {
 
   return (
     <div style={{ padding: 24 }}>
+      <h1 style={{textAlign:'center'}}>Thêm danh mục</h1>
       <div style={{}}>
         {/* CREAT FORM */}
         <Form
@@ -191,12 +210,30 @@ export default function Suppliers() {
         </Form>
       </div>
       {/* TABLE */}
-      <Table
-        rowKey="id"
-        dataSource={items}
-        columns={columns}
-        pagination={false}
-      />
+      <Modal
+        width={1000}
+        open={openTable}
+        onCancel={() => {
+          setOpenTable(false);
+        }}
+        onOk={() => {
+          setOpenTable(false);
+        }}
+      >
+        <Table
+          rowKey="id"
+          dataSource={items.slice((currentPage - 1) * 10, currentPage * 10)}
+          columns={columns}
+          pagination={false}
+        />
+        <Pagination
+          style={{ paddingTop: "24px" }}
+          total={items.length}
+          current={currentPage}
+          pageSize={10}
+          onChange={handlePageChange}
+        />
+      </Modal>
 
       {/* EDIT FORM */}
 

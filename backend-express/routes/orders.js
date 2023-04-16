@@ -1,133 +1,89 @@
 const yup = require("yup");
 const express = require("express");
 const router = express.Router();
-const { Order } = require("../models");
-const passport = require('passport');
+const passport = require("passport");
+
+const {
+  validateSchema,
+  loginProductSchema,
+} = require("../validation/employee");
+const { Order } = require("../models/index");
 const ObjectId = require("mongodb").ObjectId;
+const { CONNECTION_STRING } = require("../constants/dbSettings");
+const { default: mongoose } = require("mongoose");
 
-const { CONNECTION_STRING } = require('../constants/dbSettings');
-const { default: mongoose } = require('mongoose');
+const encodeToken = require("../helpers/ordersHelper");
 
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 mongoose.connect(CONNECTION_STRING);
 
+//POST TOKEN LOGIN ID
+router.post(
+  "/login/:id",
+  validateSchema(loginProductSchema),
+  async (req, res, next) => {
+    try {
+      const { _id } = req.body;
+      const order = await Order.findById({ _id });
+
+      console.log(order);
+
+      if (!order) return res.status(404).send("Not found");
+
+      const token = encodeToken(order._id, order.status, order.description);
+
+      res.send({
+        token,
+        payload: order,
+      });
+    } catch {
+      res.send("error");
+    }
+  }
+);
+
+//GET TOKEN PROFILE
 router.get(
-  '/profile',
-  passport.authenticate('jwt', { session: false }),
+  "/profile/:id",
+  passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const order = await Order.findById(req.user._id);
 
-      if (!order) return res.status(404).send({ message: 'Not found' });
+      if (!order) return res.status(404).send({ message: "Not found" });
 
       res.status(200).json(order);
     } catch (err) {
       res.sendStatus(500);
     }
-  },
+  }
 );
 
-router.route('/profile').get(passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    const order = await Order.findById(req.user._id);
-
-    if (!order) return res.status(404).send({ message: 'Not found' });
-
-    res.status(200).json(order);
+    let results = await Order.find()
+      .populate("customer")
+      .populate("employee")
+      .populate("orderDetails.product");
+    res.send(results);
   } catch (err) {
     res.sendStatus(500);
   }
-},);
+});
 
-// Methods: POST / PATCH / GET / DELETE / PUT
-// Get all
-router.get('/', async (req, res, next) => {
+// Create new data
+router.post("/", async function (req, res, next) {
   try {
-    let results = await Order.find().populate('customer').populate('employee').lean({ virtuals: true });
+    const data = req.body;
+    const newItem = new Order(data);
+    let result = await newItem.save();
 
-    res.json(results);
-  } catch (error) {
-    res.status(500).json({ ok: false, error });
+    return res.send({ ok: true, message: "Created", result });
+  } catch (err) {
+    return res.status(500).json({ error: err });
   }
 });
 
-router.get("/:id", async function (req, res, next) {
-  // Validate
-  const validationSchema = yup.object().shape({
-    params: yup.object({
-      id: yup
-        .string()
-        .test("Validate ObjectID", "${path} is not valid ObjectID", (value) => {
-          return ObjectId.isValid(value);
-        }),
-    }),
-  });
-
-  validationSchema
-    .validate({ params: req.params }, { abortEarly: false })
-    .then(async () => {
-      const id = req.params.id;
-
-      let found = await Order.findById(id);
-
-      if (found) {
-        return res.send({ ok: true, result: found });
-      }
-
-      return res.send({ ok: false, message: "Object not found" });
-    })
-    .catch((err) => {
-      return res.status(400).json({
-        type: err.name,
-        errors: err.errors,
-        message: err.message,
-        provider: "yup",
-      });
-    });
-});
-router.post("/", function (req, res, next) {
-  // Validate
-  const validationSchema = yup.object({
-    body: yup.object({
-      orderDetails: yup.array().required(),
-      createdDate: yup.date().required(),
-      shippedDate: yup.date().required(),
-      paymentType: yup.string().max(20).required(),
-      shippingAddress: yup.string().max(500).required(),
-      status: yup.string().max(50).required(),
-      description: yup.string().required(),
-      customerId: yup
-        .string()
-        .required()
-        .test("Validate ObjectID", "${path} is not valid ObjectID", (value) => {
-          return ObjectId.isValid(value);
-        }),
-      employeeId: yup
-        .string()
-        .required()
-        .test("Validate ObjectID", "${path} is not valid ObjectID", (value) => {
-          return ObjectId.isValid(value);
-        }),
-    }),
-  });
-
-  validationSchema
-    .validate({ body: req.body }, { abortEarly: false })
-    .then(async () => {
-      const data = req.body;
-      let newItem = new Order(data);
-      await newItem.save();
-      res.send({ ok: true, message: "Created", result: newItem });
-    })
-    .catch((err) => {
-      return res.status(400).json({
-        type: err.name,
-        errors: err.errors,
-        message: err.message,
-        provider: "yup",
-      });
-    });
-});
 router.delete("/:id", function (req, res, next) {
   const validationSchema = yup.object().shape({
     params: yup.object({
@@ -164,6 +120,18 @@ router.delete("/:id", function (req, res, next) {
         provider: "yup",
       });
     });
+});
+
+router.patch("/:id", async function (req, res, next) {
+  try {
+    const id = req.params.id;
+    const patchData = req.body;
+    await Order.findByIdAndUpdate(id, patchData);
+
+    res.send({ ok: true, message: "Updated" });
+  } catch (error) {
+    res.status(500).send({ ok: false, error });
+  }
 });
 
 module.exports = router;

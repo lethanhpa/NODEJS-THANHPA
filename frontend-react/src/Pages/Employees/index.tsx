@@ -1,4 +1,13 @@
-import { Button, Form, Input, message, Modal, Space, Table } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Pagination,
+  Space,
+  Table,
+} from "antd";
 import axios from "../../libraries/axiosClient";
 import React from "react";
 
@@ -6,9 +15,9 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 import type { ColumnsType } from "antd/es/table";
 
-const apiName = "/customers";
+const apiName = "/employees";
 
-export default function Customers() {
+export default function Employees() {
   const [items, setItems] = React.useState<any[]>([]);
 
   const [refresh, setRefresh] = React.useState<number>(0);
@@ -17,12 +26,20 @@ export default function Customers() {
 
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
+  const [openTable, setOpenTable] = React.useState<boolean>(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setPageSize(pageSize || 10);
+  };
 
   const columns: ColumnsType<any> = [
     {
       title: "Id",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "_id",
+      key: "_id",
       width: "1%",
       align: "right",
       render: (text, record, index) => {
@@ -84,6 +101,15 @@ export default function Customers() {
       },
     },
     {
+      title: "Password",
+      dataIndex: "password",
+      key: "password",
+      align: "center",
+      render: (text, record, index) => {
+        return <span>{text}</span>;
+      },
+    },
+    {
       title: "",
       dataIndex: "actions",
       key: "actions",
@@ -95,7 +121,7 @@ export default function Customers() {
               icon={<EditOutlined />}
               onClick={() => {
                 setOpen(true);
-                setUpdateId(record.id);
+                setUpdateId(record._id);
                 updateForm.setFieldsValue(record);
               }}
             />
@@ -103,8 +129,8 @@ export default function Customers() {
               danger
               icon={<DeleteOutlined />}
               onClick={() => {
-                console.log(record.id);
-                axios.delete(apiName + "/" + record.id).then((response) => {
+                console.log(record._id);
+                axios.delete(apiName + "/" + record._id).then((response) => {
                   setRefresh((f) => f + 1);
                   message.success("Xóa danh mục thành công!", 1.5);
                 });
@@ -116,7 +142,7 @@ export default function Customers() {
     },
   ];
 
-  // Get customers
+  // Get employees
   React.useEffect(() => {
     axios
       .get(apiName)
@@ -137,6 +163,7 @@ export default function Customers() {
       .then((response) => {
         setRefresh((f) => f + 1);
         createForm.resetFields();
+        setOpenTable(true);
         message.success("Thêm mới danh mục thành công!", 1.5);
       })
       .catch((err) => {});
@@ -214,6 +241,11 @@ export default function Customers() {
           <Form.Item label="Birthday" name="birthday" hasFeedback>
             <Input />
           </Form.Item>
+
+          <Form.Item label="Password" name="password">
+            <Input.Password />
+          </Form.Item>
+
           <Form.Item
             wrapperCol={{
               offset: 8,
@@ -227,12 +259,30 @@ export default function Customers() {
         </Form>
       </div>
       {/* TABLE */}
-      <Table
-        rowKey="id"
-        dataSource={items}
-        columns={columns}
-        pagination={false}
-      />
+      <Modal
+        width='100%'
+        open={openTable}
+        onCancel={() => {
+          setOpenTable(false);
+        }}
+        onOk={() => {
+          setOpenTable(false);
+        }}
+      >
+        <Table
+          rowKey="id"
+          dataSource={items.slice((currentPage - 1) * 10, currentPage * 10)}
+          columns={columns}
+          pagination={false}
+        />
+        <Pagination
+          style={{ paddingTop: "24px" }}
+          total={items.length}
+          current={currentPage}
+          pageSize={10}
+          onChange={handlePageChange}
+        />
+      </Modal>
 
       {/* EDIT FORM */}
 
@@ -303,6 +353,10 @@ export default function Customers() {
 
           <Form.Item label="Birthday" name="birthday" hasFeedback>
             <Input />
+          </Form.Item>
+
+          <Form.Item label="Password" name="password">
+            <Input.Password />
           </Form.Item>
         </Form>
       </Modal>

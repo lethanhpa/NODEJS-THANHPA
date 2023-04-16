@@ -179,6 +179,7 @@ const {
   categorySchema,
 } = require('../validation/employee');
 const encodeToken = require('../helpers/jwtHelper');
+const ObjectId = require('mongodb').ObjectId;
 
 // MONGOOSE
 mongoose.set('strictQuery', false);
