@@ -189,7 +189,7 @@ export default function Categories() {
         }}
       >
         <Table
-          rowKey="id"
+          rowKey="_id"
           dataSource={items.slice((currentPage - 1) * 10, currentPage * 10)}
           columns={columns}
           pagination={false}
