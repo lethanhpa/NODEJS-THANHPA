@@ -6,7 +6,8 @@ const passport = require("passport");
 const {
   validateSchema,
   loginProductSchema,
-} = require("../validation/employee");
+  getProductsSchema
+} = require("../validation/product");
 const { Product } = require("../models/index");
 const ObjectId = require("mongodb").ObjectId;
 const { CONNECTION_STRING } = require("../constants/dbSettings");
@@ -16,6 +17,74 @@ const encodeToken = require("../helpers/productsHelper");
 
 mongoose.set("strictQuery", false);
 mongoose.connect(CONNECTION_STRING);
+
+router.get('/', validateSchema(getProductsSchema), async (req, res, next) => {
+  try {
+    const {
+      category,
+      sup,
+      q,
+      skip,
+      limit,
+      productName,
+      stockStart,
+      stockEnd,
+      priceStart,
+      priceEnd,
+      discountStart,
+      discountEnd,
+    } = req.query;
+    const conditionFind = {};
+
+    if (category) conditionFind.categoryId = category;
+    if (sup) conditionFind.supplierId = sup;
+    if (productName) {
+      conditionFind.name = new RegExp(`${productName}`)
+    }
+
+    if (stockStart & stockEnd) {
+      conditionFind.stock = {
+        $expr: {
+          $and: [
+            { stock: { $gte: Number(stockStart) } },
+            { stock: { $lte: Number(stockEnd) } },
+          ]
+        }
+      }
+    } else if (stockStart) {
+      conditionFind.stock = {
+        $expr: {
+          $and: [
+            { stock: { $gte: Number(stockStart) } },
+          ]
+        }
+      }
+    } else if (stockEnd) {
+      conditionFind.stock = {
+        $expr: {
+          $and: [
+            { stock: { $lte: Number(stockEnd) } },
+          ]
+        }
+      }
+    }
+
+    console.log('««««« conditionFind »»»»»', conditionFind);
+
+    let results = await Product
+    .find(conditionFind)
+    .populate('category')
+    .populate('supplier')
+    .skip(skip)
+    .limit(limit)
+    .lean({ virtuals: true });
+
+    res.json(results);
+  } catch (error) {
+    console.log('««««« error »»»»»', error);
+    res.status(500).json({ ok: false, error });
+  }
+});
 
 router.get("/", async (req, res, next) => {
   try {
