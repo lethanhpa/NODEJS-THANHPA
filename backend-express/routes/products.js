@@ -29,34 +29,31 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", function (req, res, next) {
+router.get('/:id', async function (req, res, next) {
   // Validate
   const validationSchema = yup.object().shape({
     params: yup.object({
-      id: yup.number(),
+      id: yup.string().test('Validate ObjectID', '${path} is not valid ObjectID', (value) => {
+        return ObjectId.isValid(value);
+      }),
     }),
   });
 
   validationSchema
     .validate({ params: req.params }, { abortEarly: false })
-    .then(() => {
+    .then(async () => {
       const id = req.params.id;
 
-      let found = data.find((x) => x.id == id);
+      let found = await Product.findById(id);
 
       if (found) {
         return res.send({ ok: true, result: found });
       }
 
-      return res.send({ ok: false, message: "Object not found" });
+      return res.send({ ok: false, message: 'Object not found' });
     })
     .catch((err) => {
-      return res.status(400).json({
-        type: err.name,
-        errors: err.errors,
-        message: err.message,
-        provider: "yup",
-      });
+      return res.status(400).json({ type: err.name, errors: err.errors, message: err.message, provider: 'yup' });
     });
 });
 

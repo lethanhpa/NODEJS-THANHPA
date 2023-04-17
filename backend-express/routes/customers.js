@@ -75,15 +75,13 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", async function (req, res, next) {
+router.get('/:id', async function (req, res, next) {
   // Validate
   const validationSchema = yup.object().shape({
     params: yup.object({
-      id: yup
-        .string()
-        .test("Validate ObjectID", "${path} is not valid ObjectID", (value) => {
-          return ObjectId.isValid(value);
-        }),
+      id: yup.string().test('Validate ObjectID', '${path} is not valid ObjectID', (value) => {
+        return ObjectId.isValid(value);
+      }),
     }),
   });
 
@@ -98,15 +96,10 @@ router.get("/:id", async function (req, res, next) {
         return res.send({ ok: true, result: found });
       }
 
-      return res.send({ ok: false, message: "Object not found" });
+      return res.send({ ok: false, message: 'Object not found' });
     })
     .catch((err) => {
-      return res.status(400).json({
-        type: err.name,
-        errors: err.errors,
-        message: err.message,
-        provider: "yup",
-      });
+      return res.status(400).json({ type: err.name, errors: err.errors, message: err.message, provider: 'yup' });
     });
 });
 

@@ -136,6 +136,7 @@ export default function Categories() {
       <div style={{}}>
         {/* CREAT FORM */}
         <Form
+        style={{ paddingTop: "24px", width:'80%' }}
           form={createForm}
           name='create-form'
           onFinish={onFinish}

@@ -18,7 +18,6 @@ import {
   EditOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-
 import type { ColumnsType } from "antd/es/table";
 import numeral from "numeral";
 
@@ -33,14 +32,13 @@ export default function Products() {
 
   const [refresh, setRefresh] = React.useState<number>(0);
   const [open, setOpen] = React.useState<boolean>(false);
-  const [openTable, setOpenTable] = React.useState<boolean>(false);
+  const [openTable, setOpenTable] = React.useState<boolean>(true);
   const [updateId, setUpdateId] = React.useState<number>(0);
 
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
   const [currentPage, setCurrentPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(10);
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     setPageSize(pageSize || 10);

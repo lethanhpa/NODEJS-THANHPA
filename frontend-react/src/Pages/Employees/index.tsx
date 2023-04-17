@@ -182,10 +182,12 @@ export default function Employees() {
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ paddingTop: 24 }}>
+      <h1 style={{textAlign: 'center', padding: 24}}>Thêm danh mục</h1>
       <div style={{}}>
         {/* CREAT FORM */}
         <Form
+        style={{ paddingTop: "24px", width:'80%' }}
           form={createForm}
           name="create-form"
           onFinish={onFinish}
